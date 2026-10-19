@@ -1,0 +1,741 @@
+{
+  "categories": [
+    {
+      "id": "ai",
+      "name": "AI 활용",
+      "command": "/ai",
+      "description": "프롬프트 고치기, AI 답변 다듬기에 쓰는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "biz",
+      "name": "창업·작은 사업",
+      "command": "/biz",
+      "description": "사업 아이디어 점검, 가격, 운영에 쓰는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "career",
+      "name": "취업·이직",
+      "command": "/career",
+      "description": "이력서, 자기소개서, 면접 준비에 쓰는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "cs",
+      "name": "고객 응대",
+      "command": "/cs",
+      "description": "문의 답변, 불만 응대, 안내문에 쓰는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "daily",
+      "name": "일상",
+      "command": "/daily",
+      "description": "하루 계획, 할 일 정리, 집안일 정리에 쓰는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "data",
+      "name": "데이터·엑셀",
+      "command": "/data",
+      "description": "표 정리, 수식, 간단한 분석에 쓰는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "decision",
+      "name": "선택·문제 해결",
+      "command": "/decide",
+      "description": "고민 정리, 장단점 비교, 결정에 쓰는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "design",
+      "name": "디자인·기획",
+      "command": "/design",
+      "description": "화면 구성, 디자인 설명, 기획 정리에 쓰는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "dev",
+      "name": "개발",
+      "command": "/dev",
+      "description": "코드 설명, 오류 찾기, 리뷰에 쓰는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "email",
+      "name": "메일·메신저",
+      "command": "/mail",
+      "description": "업무 메일과 메시지를 쓰고 다듬는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "event",
+      "name": "행사·선물",
+      "command": "/event",
+      "description": "축하 메시지, 선물 고르기, 모임 준비에 쓰는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "fitness",
+      "name": "운동",
+      "command": "/fit",
+      "description": "운동 계획, 자세 점검, 기록에 쓰는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "food",
+      "name": "요리·식단",
+      "command": "/food",
+      "description": "냉장고 재료 요리, 식단, 장보기에 쓰는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "health",
+      "name": "건강",
+      "command": "/health",
+      "description": "증상 정리, 병원 질문 준비에 쓰는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "home",
+      "name": "집·이사",
+      "command": "/home",
+      "description": "집 구하기, 이사, 정리·인테리어에 쓰는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "language",
+      "name": "외국어",
+      "command": "/lang",
+      "description": "번역, 회화 연습, 단어 암기에 쓰는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "legal",
+      "name": "생활 법률",
+      "command": "/legal",
+      "description": "계약서 읽기, 권리 확인에 쓰는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "marketing",
+      "name": "마케팅",
+      "command": "/marketing",
+      "description": "광고 문구, 상품 소개, 고객 분석에 쓰는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "meeting",
+      "name": "회의",
+      "command": "/meeting",
+      "description": "회의 준비, 회의록, 안건 정리에 쓰는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "mind",
+      "name": "마음·감정",
+      "command": "/mind",
+      "description": "감정 정리, 스트레스, 일기에 쓰는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "money",
+      "name": "돈 관리",
+      "command": "/money",
+      "description": "가계부, 저축 계획, 지출 점검에 쓰는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "parenting",
+      "name": "육아",
+      "command": "/kids",
+      "description": "아이 대화, 놀이, 생활 습관에 쓰는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "pet",
+      "name": "반려동물",
+      "command": "/pet",
+      "description": "반려동물 돌봄, 행동 이해에 쓰는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "relation",
+      "name": "인간관계",
+      "command": "/relation",
+      "description": "어려운 대화, 사과, 부탁, 거절에 쓰는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "research",
+      "name": "정보 조사",
+      "command": "/research",
+      "description": "자료 비교, 핵심 정리, 질문 만들기에 쓰는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "shopping",
+      "name": "쇼핑·구매",
+      "command": "/shop",
+      "description": "제품 비교, 후기 정리, 구매 결정에 쓰는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "sns",
+      "name": "SNS 콘텐츠",
+      "command": "/sns",
+      "description": "인스타·블로그 글과 해시태그를 만드는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "story",
+      "name": "창작·이야기",
+      "command": "/story",
+      "description": "소설, 시, 캐릭터, 설정을 만드는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "study",
+      "name": "공부",
+      "command": "/study",
+      "description": "시험 준비, 개념 정리, 요약에 쓰는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "teach",
+      "name": "가르치기",
+      "command": "/teach",
+      "description": "수업 자료, 학습지, 학생 피드백을 만드는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "travel",
+      "name": "여행",
+      "command": "/travel",
+      "description": "일정 짜기, 짐 싸기, 예산에 쓰는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "video",
+      "name": "영상·유튜브",
+      "command": "/video",
+      "description": "영상 기획, 대본, 제목을 만드는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "work",
+      "name": "직장 업무",
+      "command": "/work",
+      "description": "보고서, 기획서, 업무 정리에 쓰는 프롬프트",
+      "count": 10
+    },
+    {
+      "id": "writing",
+      "name": "글쓰기",
+      "command": "/write",
+      "description": "문장 다듬기, 교정, 말투 바꾸기에 쓰는 프롬프트",
+      "count": 10
+    }
+  ],
+  "taxonomy": {
+    "groups": [
+      {
+        "id": "life",
+        "no": "01",
+        "name": "일상·살림",
+        "desc": "하루를 굴러가게 하는 일들",
+        "categories": [
+          "daily",
+          "home",
+          "food",
+          "shopping",
+          "pet",
+          "event",
+          "travel"
+        ]
+      },
+      {
+        "id": "body",
+        "no": "02",
+        "name": "몸과 마음",
+        "desc": "건강, 운동, 감정, 관계",
+        "categories": [
+          "health",
+          "fitness",
+          "mind",
+          "relation",
+          "parenting"
+        ]
+      },
+      {
+        "id": "learn",
+        "no": "03",
+        "name": "배우기",
+        "desc": "공부, 언어, 가르치기, 조사",
+        "categories": [
+          "study",
+          "language",
+          "teach",
+          "research"
+        ]
+      },
+      {
+        "id": "work",
+        "no": "04",
+        "name": "일·커리어",
+        "desc": "직장에서 쓰는 글과 결정",
+        "categories": [
+          "work",
+          "email",
+          "meeting",
+          "career",
+          "data",
+          "decision"
+        ]
+      },
+      {
+        "id": "biz",
+        "no": "05",
+        "name": "비즈니스",
+        "desc": "사업, 마케팅, 고객",
+        "categories": [
+          "biz",
+          "marketing",
+          "sns",
+          "video",
+          "cs"
+        ]
+      },
+      {
+        "id": "make",
+        "no": "06",
+        "name": "만들기·AI",
+        "desc": "글, 이야기, 화면, 코드",
+        "categories": [
+          "writing",
+          "story",
+          "design",
+          "dev",
+          "ai"
+        ]
+      },
+      {
+        "id": "money",
+        "no": "07",
+        "name": "돈·법률",
+        "desc": "전문가 확인이 필요한 일들",
+        "categories": [
+          "money",
+          "legal"
+        ]
+      }
+    ],
+    "types": [
+      {
+        "id": "narrative",
+        "name": "서술형",
+        "core": "맥락",
+        "description": "상황과 배경을 이야기하듯 설명하는 방식. 처음 상황을 알려 줄 때 좋습니다."
+      },
+      {
+        "id": "instruction",
+        "name": "지침형",
+        "core": "규칙",
+        "description": "지켜야 할 것을 1, 2, 3 규칙으로 나열하는 방식. 꼭 지킬 조건이 있을 때 좋습니다."
+      },
+      {
+        "id": "function",
+        "name": "함수형",
+        "core": "구조",
+        "description": "입력과 출력 틀을 정해 두고 빈칸 값만 바꿔 쓰는 방식. 같은 일을 반복할 때 좋습니다."
+      }
+    ],
+    "techniques": [
+      {
+        "id": "persona",
+        "name": "페르소나",
+        "day": 1,
+        "modifier": true,
+        "oneLine": "AI에게 역할을 줍니다. 역할·경력·전문분야·말투 네 가지를 정하면 답의 수준이 달라집니다.",
+        "when": "답의 수준이나 관점이 안 맞을 때"
+      },
+      {
+        "id": "fewshot",
+        "name": "예시 주기",
+        "day": 1,
+        "modifier": true,
+        "oneLine": "예시를 1~3개 보여 주면 AI가 그 형식 안에서 답을 찾습니다.",
+        "when": "형식이 매번 제각각일 때"
+      },
+      {
+        "id": "blocks",
+        "name": "다섯 칸 뼈대",
+        "day": 1,
+        "modifier": false,
+        "oneLine": "역할·작업·입력·제약·출력 다섯 칸으로 나눠 쓰면 빠지는 항목이 없습니다.",
+        "when": "요청이 길어져 중요한 조건을 놓칠 때"
+      },
+      {
+        "id": "numbers",
+        "name": "숫자로 말하기",
+        "day": 1,
+        "modifier": true,
+        "oneLine": "짧게 대신 3문장, 자세히 대신 항목당 300자처럼 수치로 말합니다.",
+        "when": "분량과 개수가 매번 달라질 때"
+      },
+      {
+        "id": "strength",
+        "name": "강도 올리기",
+        "day": 1,
+        "modifier": true,
+        "oneLine": "권장 → 일반 → 반드시 → 절대로. 꼭 지켜야 하는 조건은 세게 말합니다.",
+        "when": "중요한 조건을 무시할 때"
+      },
+      {
+        "id": "priority",
+        "name": "신호등 우선순위",
+        "day": 1,
+        "modifier": true,
+        "oneLine": "조건을 🔴최우선 · 🟡중요 · ✅선택으로 나눠 무엇이 중요한지 알려 줍니다.",
+        "when": "조건이 많아 서로 부딪칠 때"
+      },
+      {
+        "id": "negative",
+        "name": "하지 말 것",
+        "day": 1,
+        "modifier": true,
+        "oneLine": "빼야 할 것을 미리 알려 줍니다. 이미 아는 배경 설명, 과장 표현 등.",
+        "when": "쓸데없는 내용이 섞여 올 때"
+      },
+      {
+        "id": "tone",
+        "name": "말투 정하기",
+        "day": 1,
+        "modifier": true,
+        "oneLine": "같은 내용도 말투를 정하면 전혀 다른 글이 됩니다.",
+        "when": "상대에 따라 느낌을 바꿔야 할 때"
+      },
+      {
+        "id": "alternatives",
+        "name": "대안 받기",
+        "day": 1,
+        "modifier": true,
+        "oneLine": "답을 하나만 받지 않고 여러 방법을 장단점과 함께 받아 내가 고릅니다.",
+        "when": "AI가 고른 하나가 내 상황에 안 맞을 때"
+      },
+      {
+        "id": "audience",
+        "name": "듣는 사람 정하기",
+        "day": 1,
+        "modifier": true,
+        "oneLine": "이 답을 읽는 사람이 누구인지 알려 주면 설명 수준과 길이가 맞춰집니다.",
+        "when": "너무 어렵거나 너무 뻔할 때"
+      },
+      {
+        "id": "recipe",
+        "name": "단계로 쪼개기",
+        "day": 1,
+        "modifier": true,
+        "oneLine": "할 일을 STEP 1, 2, 3으로 나눠 받습니다. 각 단계의 완료 기준까지.",
+        "when": "무엇부터 할지 모를 때"
+      },
+      {
+        "id": "flipped",
+        "name": "역질문 먼저",
+        "day": 1,
+        "modifier": true,
+        "oneLine": "바로 답하지 말고 AI가 먼저 필요한 정보를 묻게 합니다.",
+        "when": "내가 무엇을 알려 줘야 할지 모를 때"
+      },
+      {
+        "id": "verifier",
+        "name": "쪼개서 검증",
+        "day": 1,
+        "modifier": true,
+        "oneLine": "어려운 질문을 작은 질문으로 나눠 하나씩 확인한 뒤 합칩니다.",
+        "when": "그럴듯하게 틀린 답이 올 때"
+      },
+      {
+        "id": "roleplay",
+        "name": "롤플레이·게임",
+        "day": 2,
+        "modifier": false,
+        "oneLine": "규칙과 끝나는 조건을 정해 주면 AI가 상대역이 되어 한 턴씩 진행합니다.",
+        "when": "연습 상대가 필요할 때"
+      },
+      {
+        "id": "refine",
+        "name": "질문 개선",
+        "day": 2,
+        "modifier": false,
+        "oneLine": "답을 받기 전에 내 질문부터 고쳐 받습니다. 잘못된 전제도 짚어 줍니다.",
+        "when": "내 질문 자체가 애매할 때"
+      },
+      {
+        "id": "factcheck",
+        "name": "팩트체크 목록",
+        "day": 2,
+        "modifier": true,
+        "oneLine": "답 끝에 직접 확인할 항목을 🔴🟡🟢으로 정리하게 합니다.",
+        "when": "숫자·날짜·법규가 들어갈 때"
+      },
+      {
+        "id": "shortcut",
+        "name": "단축 명령어",
+        "day": 2,
+        "modifier": false,
+        "oneLine": "긴 지시를 /요약 같은 한 단어로 줄여 두고 반복해서 씁니다.",
+        "when": "같은 지시를 매번 다시 쓸 때"
+      },
+      {
+        "id": "reflection",
+        "name": "스스로 검토",
+        "day": 2,
+        "modifier": true,
+        "oneLine": "초안을 쓰고, 스스로 약점을 찾고, 고친 최종본까지 한 번에 받습니다.",
+        "when": "첫 답이 대충일 때"
+      },
+      {
+        "id": "outline",
+        "name": "아웃라인 확장",
+        "day": 2,
+        "modifier": false,
+        "oneLine": "큰 뼈대를 먼저 받고 고른 부분만 자세히 펼칩니다.",
+        "when": "긴 결과물이 얕고 엉성할 때"
+      },
+      {
+        "id": "context",
+        "name": "내 상황 고정",
+        "day": 2,
+        "modifier": true,
+        "oneLine": "상황·내 수준·목적·제약·원하지 않는 것을 먼저 고정합니다.",
+        "when": "일반론만 늘어놓을 때"
+      },
+      {
+        "id": "infinite",
+        "name": "여러 개 찍어내기",
+        "day": 2,
+        "modifier": true,
+        "oneLine": "고정 틀에 변수만 바꿔 결과물을 한꺼번에 여러 개 만듭니다.",
+        "when": "비슷한 것을 여러 개 만들어야 할 때"
+      },
+      {
+        "id": "multiview",
+        "name": "다중 관점",
+        "day": 3,
+        "modifier": true,
+        "oneLine": "한 사람이 아니라 여러 입장에서 동시에 보고, 겹치는 지점과 부딪치는 지점을 찾습니다.",
+        "when": "혼자 보면 빠지는 것이 있을 때"
+      },
+      {
+        "id": "deliberate",
+        "name": "단계별로 생각하기",
+        "day": 3,
+        "modifier": true,
+        "oneLine": "바로 답하지 말고 단계별로 따져 중간 결론을 보여 주게 합니다. 반론을 먼저 받을 수도 있습니다.",
+        "when": "틀리면 손해가 큰 판단을 할 때"
+      },
+      {
+        "id": "ape",
+        "name": "프롬프트 만드는 프롬프트",
+        "day": 3,
+        "modifier": false,
+        "oneLine": "후보를 여러 개 만들고 점수를 매겨 가장 좋은 프롬프트 하나로 합칩니다.",
+        "when": "뭐라고 시켜야 할지 막막할 때"
+      }
+    ],
+    "frameworks": [
+      {
+        "id": "5w1h",
+        "name": "5W1H",
+        "use": "상황 정리, 계획 세우기",
+        "slots": [
+          {
+            "key": "who",
+            "label": "누가"
+          },
+          {
+            "key": "what",
+            "label": "무엇을"
+          },
+          {
+            "key": "when",
+            "label": "언제"
+          },
+          {
+            "key": "where",
+            "label": "어디서"
+          },
+          {
+            "key": "why",
+            "label": "왜"
+          },
+          {
+            "key": "how",
+            "label": "어떻게"
+          }
+        ]
+      },
+      {
+        "id": "costar",
+        "name": "CO-STAR",
+        "use": "제안서, 설득하는 글",
+        "slots": [
+          {
+            "key": "context",
+            "label": "상황"
+          },
+          {
+            "key": "objective",
+            "label": "목표"
+          },
+          {
+            "key": "style",
+            "label": "문체"
+          },
+          {
+            "key": "tone",
+            "label": "말투"
+          },
+          {
+            "key": "audience",
+            "label": "읽는 사람"
+          },
+          {
+            "key": "response",
+            "label": "결과물 형식"
+          }
+        ]
+      },
+      {
+        "id": "focus",
+        "name": "FOCUS",
+        "use": "마케팅 메시지, 캠페인",
+        "slots": [
+          {
+            "key": "function",
+            "label": "역할"
+          },
+          {
+            "key": "objective",
+            "label": "목표"
+          },
+          {
+            "key": "context",
+            "label": "상황"
+          },
+          {
+            "key": "utility",
+            "label": "쓰이는 곳"
+          },
+          {
+            "key": "specifications",
+            "label": "세부 조건"
+          }
+        ]
+      },
+      {
+        "id": "roses",
+        "name": "ROSES",
+        "use": "협상, 상황 연습",
+        "slots": [
+          {
+            "key": "role",
+            "label": "역할"
+          },
+          {
+            "key": "objective",
+            "label": "목표"
+          },
+          {
+            "key": "scenario",
+            "label": "시나리오"
+          },
+          {
+            "key": "solution",
+            "label": "기대 결과"
+          },
+          {
+            "key": "steps",
+            "label": "단계"
+          }
+        ]
+      },
+      {
+        "id": "risen",
+        "name": "RISEN",
+        "use": "문제 해결 절차, 만들기 요청",
+        "slots": [
+          {
+            "key": "role",
+            "label": "역할"
+          },
+          {
+            "key": "instructions",
+            "label": "지시"
+          },
+          {
+            "key": "steps",
+            "label": "단계"
+          },
+          {
+            "key": "end",
+            "label": "최종 목표"
+          },
+          {
+            "key": "narrowing",
+            "label": "범위 제한"
+          }
+        ]
+      },
+      {
+        "id": "bab",
+        "name": "BAB",
+        "use": "성공 사례, 홍보 글",
+        "slots": [
+          {
+            "key": "before",
+            "label": "이전"
+          },
+          {
+            "key": "after",
+            "label": "이후"
+          },
+          {
+            "key": "bridge",
+            "label": "그 사이에 한 일"
+          }
+        ]
+      }
+    ],
+    "keys": [
+      {
+        "id": "specific",
+        "name": "명확하고 구체적으로",
+        "check": "숫자와 조건이 들어 있는가"
+      },
+      {
+        "id": "contextual",
+        "name": "충분한 맥락",
+        "check": "내 상황과 목적이 적혀 있는가"
+      },
+      {
+        "id": "sample",
+        "name": "말보다 샘플 하나",
+        "check": "예시나 참고 자료가 있는가"
+      },
+      {
+        "id": "split",
+        "name": "큰 일은 잘게 쪼개기",
+        "check": "한 번에 너무 많은 것을 시키지 않는가"
+      },
+      {
+        "id": "partner",
+        "name": "AI를 파트너로",
+        "check": "결과를 초안으로 보고 다듬을 여지를 두었는가"
+      }
+    ]
+  }
+}
