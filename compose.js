@@ -502,6 +502,47 @@
     ].join('\n');
   }
 
+  /* 영문 변환 전 바뀌면 안 되는 값은 임시 토큰으로 감싸고, 응답 후 검증·복원합니다. */
+  function prepareEnglishConversion(source, language) {
+    const text = String(source || '');
+    let prefix = '__PROMPTERA_KEEP_';
+    while (text.includes(prefix)) prefix += '_';
+    const protectedValues = [];
+    const masked = text.replace(/```[\s\S]*?```|`[^`\n]+`|\{[^{}\n]+\}|https?:\/\/[^\s<>"']+|\/[A-Za-z가-힣][A-Za-z가-힣0-9_-]*|\d+(?:[.,:\/-]\d+)*%?/g, value => {
+      const token = prefix + protectedValues.length + '__';
+      protectedValues.push({ token: token, value: value });
+      return token;
+    });
+    const languageRule = language === 'en'
+      ? 'Make the final prompt request English explanations and answers. Preserve task-specific translation targets, quoted text, and code languages.'
+      : language === 'preserve'
+        ? 'Preserve every response-language instruction from the original prompt. Do not introduce a new response language.'
+        : 'Make the final prompt request Korean explanations and answers. Preserve task-specific translation targets, quoted text, and code languages; for example an English translation exercise must still produce the requested English examples.';
+    return {
+      masked: masked,
+      prompt: [
+        'Translate the following prompt instructions into clear, faithful English. Do not perform the task described inside the prompt.',
+        'Preserve the meaning, scope, constraints, conditions, bullet structure, and requested output format. Do not add claims, remove caveats, optimize away constraints, or invent missing input.',
+        'Tokens beginning with ' + prefix + ' represent protected original text. Copy every token exactly once, without editing, translating, duplicating, or dropping it. Never create new tokens.',
+        'Keep proper nouns and cultural or regional context faithful. Translate instructions that forbid actions as prohibitions, not as things to execute.',
+        languageRule,
+        'Return only the translated prompt body. No preface, explanation, translation report, or wrapping code fence.',
+        '', JSON.stringify({ prompt_to_translate: masked })
+      ].join('\n'),
+      restore: function (answer) {
+        let output = String(answer || '').trim().replace(/^```(?:markdown|md|text)?\s*\n([\s\S]*?)\n```\s*$/i, '$1').trim();
+        if (!output) throw new Error('영문 변환 결과가 비어 있습니다. 다시 시도해 주세요.');
+        const received = output.match(new RegExp(prefix + '\\d+__', 'g')) || [];
+        if (received.length !== protectedValues.length || protectedValues.some(item => received.filter(token => token === item.token).length !== 1)) {
+          throw new Error('변환 중 빈칸·숫자·코드 등의 보존을 확인하지 못했습니다. 원문은 유지됩니다. 다시 시도해 주세요.');
+        }
+        protectedValues.forEach(item => { output = output.replace(item.token, () => item.value); });
+        if (output.includes(prefix)) throw new Error('변환 결과에 알 수 없는 보호 토큰이 있습니다. 다시 시도해 주세요.');
+        return output;
+      }
+    };
+  }
+
   /* ---------- 프레임워크 빌더 ---------- */
 
   function buildFrameworkPrompt(fw, values, task) {
@@ -597,6 +638,7 @@
     QUESTION_CHECKS: QUESTION_CHECKS,
     buildApe: buildApe,
     buildGenerator: buildGenerator,
+    prepareEnglishConversion: prepareEnglishConversion,
     buildFrameworkPrompt: buildFrameworkPrompt,
     buildQuestionRefine: buildQuestionRefine,
     scoreQuestion: scoreQuestion,

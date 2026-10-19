@@ -153,6 +153,19 @@ a{color:inherit}
 .generator-result{width:100%;min-height:380px;resize:vertical;font-family:var(--mono);font-size:.86rem;line-height:1.8;background:var(--bg-soft)}
 .generator-connection input,.generator-connection select{width:100%}
 #gen-status{min-height:2.5em;overflow-wrap:anywhere}
+.english-dialog{width:min(760px,calc(100% - 28px));max-height:calc(100dvh - 40px);padding:26px;border:1px solid var(--line-mid);border-radius:16px;color:var(--text);background:var(--panel);overflow-y:auto}
+.english-dialog[open]{display:flex;flex-direction:column;gap:14px}
+.english-dialog::backdrop{background:#17232e66;backdrop-filter:blur(3px)}
+.english-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.english-head h2{margin:0;font-size:1.25rem;letter-spacing:-.03em}
+.english-options{display:grid;grid-template-columns:1fr 1.2fr 1.1fr;gap:12px}
+.english-dialog label{display:flex;flex-direction:column;gap:6px;font-size:.82rem;font-weight:600;min-width:0}
+.english-dialog input,.english-dialog select,.english-dialog textarea{width:100%;min-width:0;max-width:100%;font:inherit;font-size:.86rem;color:var(--text);background:var(--bg-soft);border:1px solid var(--line-mid);border-radius:8px;padding:10px}
+.english-dialog textarea{resize:vertical;line-height:1.75}
+.english-dialog summary{font-size:.8rem;cursor:pointer;color:var(--muted)}
+#english-original{margin-top:9px}
+#english-status{min-height:2em}
+@media (max-width:600px){.english-dialog{padding:18px}.english-options{grid-template-columns:1fr}}
 .btn-copy{background:var(--text);border-color:var(--text);color:#fff}
 .btn-copy:hover{filter:brightness(1.15)}
 .btn-copy.done{background:var(--ok);border-color:var(--ok)}

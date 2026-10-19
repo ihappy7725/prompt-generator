@@ -74,5 +74,18 @@ const base = { key: 'test-key-never-real', model: 'test-model', prompt: '작업�
   assert.match(prompt, /금지·제약 조건/);
   assert.match(prompt, /완성된 프롬프트 본문만/);
   assert.match(prompt, /작업을 직접 수행하지 말고/);
+  const original = '#역할\n{이름}에게 3문장, 2026-10-19까지 10,000원 이하. /종료를 입력하면 끝. https://example.com/a?q=2\n`const n = 42`\n```js\nconst secret = "원문";\n```';
+  const conversion = pure.PC.prepareEnglishConversion(original, 'ko');
+  assert.match(conversion.prompt, /Korean explanations/);
+  assert.match(conversion.prompt, /Do not perform the task/);
+  assert.equal(conversion.restore(conversion.masked), original);
+  assert.match(pure.PC.prepareEnglishConversion(original, 'en').prompt, /English explanations/);
+  assert.match(pure.PC.prepareEnglishConversion(original, 'preserve').prompt, /Preserve every response-language instruction/);
+  assert.throws(() => conversion.restore(conversion.masked.replace(/__PROMPTERA_KEEP_0__/, 'changed')), /保존|보존/);
+  assert.throws(() => conversion.restore(conversion.masked + ' __PROMPTERA_KEEP_0__'), /보존/);
+  assert.throws(() => conversion.restore(conversion.masked + ' __PROMPTERA_KEEP_X__'), /보호 토큰/);
+  assert.throws(() => conversion.restore(''), /비어/);
+  const collision = pure.PC.prepareEnglishConversion('기존 __PROMPTERA_KEEP_0__ 표기와 {입력} 5개', 'ko');
+  assert.equal(collision.restore(collision.masked), '기존 __PROMPTERA_KEEP_0__ 표기와 {입력} 5개');
   console.log('API·생성 요청 검사 통과: 제공사 3종 인증/출력 한도·응답 추출·잘림/빈 응답/오류·키 비노출·취소·생성 지시');
 })().catch(error => { console.error(error); process.exitCode = 1; });

@@ -241,6 +241,7 @@
         <pre id="d-preview" class="body"></pre>
         <div class="row">
           <button class="btn btn-copy" type="button" data-act="copy">복사</button>
+          <button class="btn" type="button" data-english-source="detail">영문 변환·복사</button>
           <button class="btn" type="button" data-act="fav" aria-pressed="false">☆ 즐겨찾기</button>
           <button class="btn" type="button" data-act="cart">조립 카트에 담기</button>
           <button class="btn" type="button" data-act="open-claude">복사하고 Claude 열기</button>
@@ -341,6 +342,7 @@
         <textarea id="gen-result" class="generator-result" rows="18" aria-label="생성된 프롬프트" placeholder="AI가 만든 프롬프트가 여기에 표시됩니다. 생성 후 원하는 대로 수정해 복사하세요."></textarea>
         <div class="row">
           <button id="gen-copy" class="btn btn-copy" type="button" data-act="gen-copy" disabled>프롬프트 복사</button>
+          <button id="gen-english" class="btn" type="button" data-english-source="generator" disabled>영문 변환·복사</button>
           <button id="gen-open" class="btn" type="button" data-act="gen-open" disabled>복사하고 Claude 열기</button>
         </div>
         <details class="generator-advanced"><summary>다른 AI에 직접 붙여넣을 생성 요청문 보기</summary>
@@ -378,6 +380,7 @@
         <pre id="fw-preview" class="body"></pre>
         <div class="row">
           <button class="btn btn-copy" type="button" data-act="fw-copy">복사</button>
+          <button class="btn" type="button" data-english-source="fw">영문 변환·복사</button>
           <button class="btn" type="button" data-act="open-claude">복사하고 Claude 열기</button>
           <button class="btn" type="button" data-act="toggle-api">AI로 바로 실행</button>
         </div>
@@ -410,6 +413,7 @@
         <pre id="q-preview" class="body"></pre>
         <div class="row">
           <button class="btn btn-copy" type="button" data-act="q-copy">복사</button>
+          <button class="btn" type="button" data-english-source="question">영문 변환·복사</button>
           <button class="btn" type="button" data-act="open-claude">복사하고 Claude 열기</button>
           <button class="btn" type="button" data-act="toggle-api">AI로 바로 실행</button>
         </div>
@@ -441,8 +445,26 @@
 
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
+<dialog id="english-dialog" class="english-dialog" aria-labelledby="english-title">
+  <div class="english-head"><h2 id="english-title">영문 프롬프트로 변환</h2><button id="english-close" class="btn btn-mini" type="button" aria-label="영문 변환 닫기">닫기</button></div>
+  <p class="hint">영문이 항상 더 좋은 답을 보장하지는 않습니다. 원문과 비교해 사용하세요. 변환 시 본인 API 사용료가 발생합니다.</p>
+  <details><summary>변환할 원문 보기</summary><textarea id="english-original" rows="5" readonly aria-label="변환할 원문"></textarea></details>
+  <div class="english-options">
+    <label>AI 제공사<select id="english-provider" class="select"></select></label>
+    <label>모델 이름<input id="english-model" type="text" maxlength="120" spellcheck="false"></label>
+    <label>결과 답변 언어<select id="english-language" class="select"><option value="ko">한국어 답변</option><option value="en">영어 답변</option><option value="preserve">원문의 언어 지시 유지</option></select></label>
+  </div>
+  <label class="english-key">내 API 키<input id="english-key" type="password" autocomplete="off" spellcheck="false" maxlength="512"></label>
+  <p class="hint">키와 결과는 브라우저 저장소에 저장하지 않으며 새로고침하면 사라집니다. 생성기에 입력한 키는 현재 페이지에서 이어서 사용할 수 있습니다.</p>
+  <div class="row"><button id="english-run" class="btn btn-copy" type="button">영문으로 변환</button><button id="english-cancel" class="btn" type="button" hidden>변환 취소</button><button id="english-forget" class="btn" type="button">변환기 키 지우기</button></div>
+  <p id="english-status" class="hint" role="status" aria-live="polite">원문의 조건을 유지해 영문 지시문으로 바꿉니다.</p>
+  <label class="english-output">변환된 영문 · 직접 수정 가능<textarea id="english-result" rows="12" lang="en" placeholder="변환 후 원문과 비교하고 필요한 부분을 수정하세요."></textarea></label>
+  <button id="english-copy" class="btn btn-copy" type="button" disabled>영문 프롬프트 복사</button>
+</dialog>
+
 <script src="compose.js"></script>
 <script src="api.js"></script>
+<script src="english.js"></script>
 <script src="motion.js"></script>
 <script src="app.js"></script>
 </body>

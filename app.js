@@ -44,7 +44,7 @@
     'c-items', 'c-empty', 'c-mode', 'c-opts', 'c-form', 'c-result', 'c-warn', 'c-suggest', 'c-saved',
     'view-ape', 'view-fw', 'view-question', 'view-tech',
     'ape-form', 'ape-strategies', 'ape-count', 'ape-preview',
-    'gen-provider', 'gen-model', 'gen-key', 'gen-key-help', 'gen-submit', 'gen-cancel', 'gen-status', 'gen-result', 'gen-copy', 'gen-open',
+    'gen-provider', 'gen-model', 'gen-key', 'gen-key-help', 'gen-submit', 'gen-cancel', 'gen-status', 'gen-result', 'gen-copy', 'gen-open', 'gen-english',
     'fw-picker', 'fw-use', 'fw-form', 'fw-task', 'fw-preview', 'fw-left',
     'q-text', 'q-checks', 'q-score', 'q-preview', 'tech-body', 'tech-count'
   ].forEach(id => { el[id] = document.getElementById(id); });
@@ -422,6 +422,7 @@
   /* ---------- 보기 전환 ---------- */
 
   function show(view) {
+    if (state.view !== view && window.PENGLISH) window.PENGLISH.close();
     if (view !== 'ape' && state.generator.busy) cancelGeneration();
     state.view = view;
     el['generator-nav'].toggleAttribute('aria-current', view === 'ape');
@@ -702,6 +703,7 @@
         '<pre class="body">' + markSlots(r.text) + '</pre>' +
         '<div class="row">' +
           '<button class="btn btn-copy" type="button" data-act="c-copy">복사</button>' +
+          '<button class="btn" type="button" data-english-source="cart">영문 변환·복사</button>' +
           '<button class="btn" type="button" data-act="toggle-api">AI로 바로 실행</button>' +
         '</div><div id="api-panel-cart"></div>';
       el['c-warn'].innerHTML = m.conflicts.length
@@ -719,7 +721,7 @@
           '<button class="btn btn-mini" type="button" data-step="' + (s.step - 1) + '">이 단계 복사</button></div>' +
           '<pre class="body">' + markSlots(s.text) + '</pre>' +
         '</div>'
-      ).join('') + '<div class="row"><button class="btn" type="button" data-act="c-copy">전체 복사</button></div>';
+      ).join('') + '<div class="row"><button class="btn" type="button" data-act="c-copy">전체 복사</button><button class="btn" type="button" data-english-source="cart">전체 영문 변환·복사</button></div>';
       el['c-warn'].innerHTML = '';
       state.chainSteps = steps;
     }
@@ -861,6 +863,7 @@
     el['gen-result'].setAttribute('aria-busy', String(g.busy));
     el['gen-copy'].disabled = g.busy || !g.result.trim();
     el['gen-open'].disabled = g.busy || !g.result.trim();
+    el['gen-english'].disabled = g.busy || !g.result.trim();
     ['gen-provider', 'gen-model', 'gen-key', 'ape-count'].forEach(id => { el[id].disabled = g.busy; });
     el['ape-form'].querySelectorAll('textarea').forEach(input => { input.disabled = g.busy; });
     el['ape-strategies'].querySelectorAll('button').forEach(button => { button.disabled = g.busy; });
@@ -1183,6 +1186,13 @@
   /* ---------- 이벤트 ---------- */
 
   function bindGlobal() {
+    document.addEventListener('click', e => {
+      const button = e.target.closest('[data-english-source]');
+      if (!button || button.disabled) return;
+      const source = button.dataset.englishSource === 'generator' ? state.generator.result : activeText();
+      if (!source || !source.trim()) { toast('변환할 프롬프트가 없습니다'); return; }
+      window.PENGLISH.open({ source, copy, connection: state.generator });
+    });
     el['home-generator-form'].addEventListener('submit', e => {
       e.preventDefault();
       const task = el['home-generator-task'].value.trim();
