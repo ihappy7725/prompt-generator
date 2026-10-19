@@ -7,6 +7,7 @@
   'use strict';
 
   const LEVELS = ['쉬움', '보통', '전문'];
+  const PAGE_SIZE = 36;
   const LS = {
     values: 'promptera.values',
     recipes: 'promptera.recipes',
@@ -17,13 +18,14 @@
 
   const state = {
     categories: [], taxonomy: null, index: [], full: {}, catLoaded: {},
-    catId: 'all', level: 'all', tech: 'all', group: 'all', query: '',
+    catId: 'all', level: 'all', tech: 'all', group: 'all', query: '', page: 1,
     view: 'home', current: null, mega: null,
     values: {}, mods: [], style: 'markdown', fw: '',
     cart: [], cartMode: 'merge', cartOpts: { roleIndex: 0, multiRole: false, keepIntermediate: false },
     api: { provider: 'anthropic', model: '', key: '', remember: false },
     favs: [],
     ape: { task: '', want: '', avoid: '', strategies: [], count: 5, runToo: false },
+    generator: { provider: 'openai', model: '', key: '', result: '', busy: false, controller: null },
     fwb: { id: 'costar', values: {}, task: '' },
     q: { text: '', checks: {} }
   };
@@ -34,12 +36,15 @@
     'mega-cat', 'mega-tech', 'mega-tool', 'mega-cat-body', 'mega-tech-body', 'mega-tool-body',
     'mega-cat-count', 'mega-tech-count',
     'view-home', 'home-stat', 'home-groups', 'home-tools', 'home-easy',
+    'finder-form', 'finder-group', 'finder-goal', 'finder-query', 'finder-output', 'finder-status', 'finder-results',
+    'generator-nav', 'home-generator-form', 'home-generator-task', 'list-pagination', 'page-prev', 'page-next', 'page-status',
     'view-list', 'view-detail', 'view-cart', 'toast', 'home',
     'd-title', 'd-summary', 'd-meta', 'd-form', 'd-mods', 'd-style', 'd-fw', 'd-preview',
     'd-left', 'd-score', 'd-expect', 'd-follow', 'api-panel',
     'c-items', 'c-empty', 'c-mode', 'c-opts', 'c-form', 'c-result', 'c-warn', 'c-suggest', 'c-saved',
     'view-ape', 'view-fw', 'view-question', 'view-tech',
-    'ape-form', 'ape-strategies', 'ape-count', 'ape-run', 'ape-preview',
+    'ape-form', 'ape-strategies', 'ape-count', 'ape-preview',
+    'gen-provider', 'gen-model', 'gen-key', 'gen-key-help', 'gen-submit', 'gen-cancel', 'gen-status', 'gen-result', 'gen-copy', 'gen-open',
     'fw-picker', 'fw-use', 'fw-form', 'fw-task', 'fw-preview', 'fw-left',
     'q-text', 'q-checks', 'q-score', 'q-preview', 'tech-body', 'tech-count'
   ].forEach(id => { el[id] = document.getElementById(id); });
@@ -47,7 +52,7 @@
   const VIEWS = ['home', 'list', 'detail', 'cart', 'ape', 'fw', 'question', 'tech'];
 
   const TOOLS = [
-    { id: 'ape', cmd: '/ape', name: 'APE 조립기', desc: '무엇을 시킬지만 적으면 프롬프트를 만들어 줍니다' },
+    { id: 'ape', cmd: '/ape', name: 'AI 프롬프트 생성기', desc: '내 API 키로, 원하는 작업에 맞는 완성된 프롬프트를 생성합니다' },
     { id: 'fw', cmd: '/fw', name: '프레임워크 빌더', desc: '정해진 칸을 채워 빠뜨리는 것 없이' },
     { id: 'question', cmd: '/ask', name: '질문 다듬기', desc: '묻기 전에 질문부터 점검합니다' },
     { id: 'tech', cmd: '/tech', name: '기법 사전', desc: '수업에서 배운 기법 24개를 한곳에' }
@@ -125,7 +130,7 @@
       state.taxonomy = bundle.taxonomy;
       state.index = bundle.prompts.map(p => ({
         id: p.id, c: p.categoryId, t: p.title, s: p.summary,
-        l: p.level, g: p.tags, k: p.techniques, y: p.type, n: (p.placeholders || []).length
+        l: p.level, g: p.tags, k: p.techniques, y: p.type, n: (p.placeholders || []).length, h: p.scenarioId || p.id
       }));
       bundle.prompts.forEach(p => { state.full[p.id] = p; });
       state.categories.forEach(c => { state.catLoaded[c.id] = true; });
@@ -209,7 +214,7 @@
   }
 
   function renderToolMenu() {
-    const html = TOOLS.map(t =>
+    const html = TOOLS.filter(t => t.id !== 'ape').map(t =>
       '<button class="tool-card" type="button" data-tool="' + esc(t.id) + '">' +
       '<span class="cmd">' + esc(t.cmd) + '</span>' +
       '<strong>' + esc(t.name) + '</strong>' +
@@ -233,6 +238,7 @@
     el['home-groups'].innerHTML = groups().map(g => {
       const n = g.categories.reduce((a, id) => a + ((catById(id) || {}).count || 0), 0);
       return '<article class="group-card">' +
+        '<span class="group-symbol" aria-hidden="true">' + ['◒', '✳', '✦', '↗', '◎', '⌘', '◓'][groups().indexOf(g)] + '</span>' +
         '<span class="no">' + esc(g.no) + '</span>' +
         '<h3>' + esc(g.name) + '</h3>' +
         '<p class="desc">' + esc(g.desc) + ' · ' + n + '개</p>' +
@@ -248,6 +254,59 @@
       .sort((a, b) => (a.n || 0) - (b.n || 0))
       .slice(0, 6);
     el['home-easy'].innerHTML = easy.map(cardHtml).join('');
+
+    if (!el['finder-group'].dataset.ready) {
+      el['finder-group'].innerHTML = '<option value="all">모든 분야</option>' + groups().map(g =>
+        '<option value="' + esc(g.id) + '">' + esc(g.name) + '</option>'
+      ).join('');
+      el['finder-group'].dataset.ready = 'true';
+    }
+  }
+
+  /* 분야와 목적에 맞는 항목을 색인의 제목·설명·태그로 추천합니다. */
+  const FINDER_GOALS = {
+    write: { name: '글·메시지 작성', words: ['작성', '쓰기', '문구', '메시지', '대본', '소개', '메일', '답변', '글쓰기'] },
+    organize: { name: '정리·요약', words: ['정리', '요약', '분류', '기록', '목록', '묶기', '핵심'] },
+    plan: { name: '계획·준비', words: ['계획', '준비', '일정', '설계', '루틴', '순서', '목표', '체크'] },
+    decide: { name: '비교·선택', words: ['비교', '선택', '결정', '판단', '장단점', '우선순위', '고르기', '합의'] },
+    review: { name: '검토·개선', words: ['점검', '검토', '개선', '오류', '검수', '회고', '수정', '고치기', '다듬기'] },
+    learn: { name: '배우기·연습', words: ['연습', '배우', '공부', '학습', '이해', '설명', '암기', '복습', '문제'] }
+  };
+
+  function recommendPrompts() {
+    const group = groups().find(g => g.id === el['finder-group'].value);
+    const goal = FINDER_GOALS[el['finder-goal'].value];
+    const query = el['finder-query'].value.trim();
+    const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
+    const candidates = state.index.map(r => {
+      if (group && !group.categories.includes(r.c)) return null;
+      const category = catById(r.c);
+      const title = r.t.toLowerCase();
+      const text = (r.t + ' ' + r.s + ' ' + r.g.join(' ') + ' ' + (category ? category.name : '')).toLowerCase();
+      if (terms.some(term => !text.includes(term))) return null;
+      const goalHits = goal ? goal.words.filter(word => text.includes(word)) : [];
+      if (goal && !goalHits.length) return null;
+      let score = (r.l === '쉬움' ? 4 : 0) + Math.max(0, 6 - r.n);
+      terms.forEach(term => { score += title.includes(term) ? 15 : 6; });
+      goalHits.forEach(word => { score += title.includes(word) ? 8 : 2; });
+      return { row: r, score };
+    }).filter(Boolean).sort((a, b) => b.score - a.score || a.row.id.localeCompare(b.row.id));
+    const top = [];
+    const usedScenarios = new Set();
+    for (const candidate of candidates) {
+      const key = candidate.row.h || candidate.row.id;
+      if (usedScenarios.has(key)) continue;
+      top.push(candidate); usedScenarios.add(key);
+      if (top.length === 3) break;
+    }
+    const selected = [group ? group.name : '모든 분야', goal ? goal.name : '모든 작업', query ? '“' + query + '”' : ''].filter(Boolean).join(' · ');
+    el['finder-output'].hidden = false;
+    el['finder-status'].textContent = top.length ? selected + ' — 조건에 맞는 ' + candidates.length + '개 중 ' + top.length + '개를 골랐어요.' : selected + ' — 맞는 프롬프트를 찾지 못했어요. 키워드를 줄이거나 분야·목적을 바꿔 보세요.';
+    el['finder-results'].innerHTML = top.map(({ row }) => {
+      const c = catById(row.c);
+      const reason = (c ? c.name : '') + (goal ? ' · ' + goal.name : '') + ' · 빈칸 ' + row.n + '개';
+      return cardHtml(row).replace('<article class="card">', '<article class="card"><p class="finder-reason">' + esc(reason) + '</p>');
+    }).join('');
   }
 
   function renderFilters() {
@@ -328,8 +387,11 @@
     '</article>';
   }
 
-  function renderList() {
+  function renderList(keepPage) {
     const rows = filtered();
+    const pages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+    state.page = keepPage === true ? Math.min(pages, Math.max(1, state.page)) : 1;
+    const start = (state.page - 1) * PAGE_SIZE;
     const cat = (state.catId === 'all' || state.catId === 'fav') ? null : catById(state.catId);
     const t = techById(state.tech);
     const g = groups().filter(x => x.id === state.group)[0];
@@ -342,7 +404,11 @@
     el.count.textContent = rows.length + '개' + (state.query ? ' · 검색: ' + state.query : '') +
       (t ? ' · 기법: ' + t.name : '') + (state.level !== 'all' ? ' · ' + state.level : '');
 
-    el.cards.innerHTML = rows.map(cardHtml).join('');
+    el.cards.innerHTML = rows.slice(start, start + PAGE_SIZE).map(cardHtml).join('');
+    el['list-pagination'].hidden = rows.length <= PAGE_SIZE;
+    el['page-prev'].disabled = state.page <= 1;
+    el['page-next'].disabled = state.page >= pages;
+    el['page-status'].textContent = state.page + ' / ' + pages + ' 페이지 · ' + (rows.length ? start + 1 : 0) + '–' + Math.min(start + PAGE_SIZE, rows.length) + ' / ' + rows.length + '개';
 
     el.empty.hidden = rows.length > 0;
     if (!rows.length) {
@@ -356,8 +422,17 @@
   /* ---------- 보기 전환 ---------- */
 
   function show(view) {
+    if (view !== 'ape' && state.generator.busy) cancelGeneration();
     state.view = view;
+    el['generator-nav'].toggleAttribute('aria-current', view === 'ape');
+    if (view === 'ape') el['generator-nav'].setAttribute('aria-current', 'page');
     VIEWS.forEach(v => { el['view-' + v].hidden = v !== view; });
+    const section = el['view-' + view];
+    section.classList.remove('view-enter');
+    // 레이아웃은 한 번만 읽어 CSS 진입 모션을 다시 시작합니다.
+    void section.offsetWidth;
+    section.classList.add('view-enter');
+    if (window.PMOTION) window.PMOTION.refresh(view);
     window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
   }
 
@@ -715,8 +790,14 @@
     else { state.favs.push(id); toast('즐겨찾기에 넣었습니다 (' + state.favs.length + '개)'); }
     store(LS.favs, state.favs);
     renderCategories();
-    renderList();
+    renderList(true);
     renderHome();
+    el['finder-results'].querySelectorAll('[data-fav]').forEach(button => {
+      const on = isFav(button.dataset.fav);
+      button.classList.toggle('on', on);
+      button.setAttribute('aria-pressed', String(on));
+      button.textContent = on ? '★' : '☆';
+    });
     if (state.view === 'detail') renderFavButton();
   }
 
@@ -728,18 +809,18 @@
     b.setAttribute('aria-pressed', String(on));
   }
 
-  /* ---------- 도구: APE 조립기 ---------- */
+  /* ---------- 도구: 사용자 API 키 기반 프롬프트 생성기 ---------- */
 
   const APE_FIELDS = [
-    { key: 'task', label: '작업', help: '무엇을 시키고 싶은지 한 줄로', example: '고객 불만 메일에 답장 쓰기', type: 'textarea' },
-    { key: 'want', label: '원하는 결과물', help: '어떤 답을 받고 싶은지', example: '고객이 화가 풀리고 다시 믿게 되는 답장', type: 'textarea' },
-    { key: 'avoid', label: '피해야 할 것', help: '이런 답은 싫다는 것', example: '변명, 책임 떠넘기기, 형식적인 사과', type: 'textarea' }
+    { key: 'task', label: '하고 싶은 작업 (필수)', help: 'AI에게 맡기려는 작업을 구체적으로 적어 주세요', example: '고객 불만 메일에 답장 쓰기', type: 'textarea' },
+    { key: 'want', label: '원하는 결과물 (선택)', help: '형식, 분량, 대상, 말투 등 원하는 결과를 적어 주세요', example: '차분한 말투의 300자 답장, 해결 방법과 다음 안내 포함', type: 'textarea' },
+    { key: 'avoid', label: '피해야 할 것 (선택)', help: '꼭 제외하거나 주의해야 할 내용을 적어 주세요', example: '변명, 책임 떠넘기기, 근거 없는 보상 약속', type: 'textarea' }
   ];
 
   function apeText() {
-    return PC.buildApe({
+    return PC.buildGenerator({
       task: state.ape.task, want: state.ape.want, avoid: state.ape.avoid,
-      count: state.ape.count, strategies: state.ape.strategies, runToo: state.ape.runToo
+      count: state.ape.count, strategies: state.ape.strategies
     });
   }
 
@@ -753,9 +834,76 @@
         ' title="' + esc(s.hint) + '" aria-pressed="' + on + '">' + esc(s.name) + '</button>';
     }).join('');
     el['ape-count'].value = String(state.ape.count);
-    el['ape-run'].checked = state.ape.runToo;
     el['ape-preview'].innerHTML = markSlots(apeText());
+    renderGeneratorConnection();
+    el['gen-result'].value = state.generator.result;
+    updateGeneratorControls();
     store(LS.tools, { ape: state.ape, fwb: state.fwb, q: state.q });
+  }
+
+  function renderGeneratorConnection() {
+    const g = state.generator;
+    const provider = PAPI.PROVIDERS.find(p => p.id === g.provider);
+    if (!g.model) g.model = provider.model;
+    el['gen-provider'].innerHTML = PAPI.PROVIDERS.map(p => '<option value="' + esc(p.id) + '"' + (p.id === g.provider ? ' selected' : '') + '>' + esc(p.name) + '</option>').join('');
+    el['gen-model'].value = g.model;
+    el['gen-key'].value = g.key;
+    el['gen-key'].placeholder = provider.keyHint;
+    el['gen-key-help'].textContent = provider.where + ' · 본인 계정에서 사용할 수 있는 모델 이름을 입력하세요.';
+  }
+
+  function updateGeneratorControls() {
+    const g = state.generator;
+    el['gen-submit'].disabled = g.busy;
+    el['gen-submit'].textContent = g.busy ? '프롬프트 생성 중…' : '프롬프트 생성하기';
+    el['gen-cancel'].hidden = !g.busy;
+    el['gen-result'].readOnly = g.busy;
+    el['gen-result'].setAttribute('aria-busy', String(g.busy));
+    el['gen-copy'].disabled = g.busy || !g.result.trim();
+    el['gen-open'].disabled = g.busy || !g.result.trim();
+    ['gen-provider', 'gen-model', 'gen-key', 'ape-count'].forEach(id => { el[id].disabled = g.busy; });
+    el['ape-form'].querySelectorAll('textarea').forEach(input => { input.disabled = g.busy; });
+    el['ape-strategies'].querySelectorAll('button').forEach(button => { button.disabled = g.busy; });
+  }
+
+  function generatorChanged() {
+    if (state.generator.result) el['gen-status'].textContent = '입력 조건이 바뀌었습니다. 아래는 이전 생성 결과입니다. 새 조건으로 다시 생성해 주세요.';
+  }
+
+  function cancelGeneration() {
+    const g = state.generator;
+    if (g.controller) g.controller.abort();
+    g.controller = null; g.busy = false;
+    el['gen-status'].textContent = '생성을 취소했습니다.';
+    updateGeneratorControls();
+  }
+
+  async function generatePrompt() {
+    const g = state.generator;
+    if (g.busy) return;
+    const task = state.ape.task.trim();
+    g.key = el['gen-key'].value.trim(); g.model = el['gen-model'].value.trim();
+    if (!task) { el['gen-status'].textContent = '하고 싶은 작업을 먼저 입력해 주세요.'; el['ape-form'].querySelector('textarea').focus(); return; }
+    if ([state.ape.task, state.ape.want, state.ape.avoid].join('').length > 12000) { el['gen-status'].textContent = '작업과 조건은 합해서 12,000자 이내로 입력해 주세요.'; return; }
+    if (!g.key) { el['gen-status'].textContent = '선택한 AI 제공사의 API 키를 입력해 주세요.'; el['gen-key'].focus(); return; }
+    if (!g.model) { el['gen-status'].textContent = '사용할 모델 이름을 입력해 주세요.'; el['gen-model'].focus(); return; }
+    const controller = new AbortController();
+    g.controller = controller; g.busy = true;
+    el['gen-status'].textContent = 'AI가 작업에 맞는 프롬프트를 만들고 있습니다…';
+    updateGeneratorControls();
+    try {
+      const answer = await PAPI.run({ provider: g.provider, key: g.key, model: g.model, prompt: apeText(), maxTokens: 4000, signal: controller.signal });
+      if (g.controller !== controller) return;
+      const result = answer.trim().replace(/^```(?:markdown|md|text)?\s*\n([\s\S]*?)\n```\s*$/i, '$1').trim();
+      if (!result) throw new Error('생성된 프롬프트가 비어 있습니다. 조건을 바꿔 다시 시도해 주세요.');
+      g.result = result; el['gen-result'].value = result;
+      el['gen-status'].textContent = '프롬프트가 완성됐습니다. 필요한 부분을 수정한 뒤 복사해 사용하세요.';
+    } catch (error) {
+      if (g.controller !== controller) return;
+      el['gen-status'].textContent = error.name === 'AbortError' ? '생성을 취소했습니다.' : error.message + (g.result ? ' 이전 생성 결과는 유지됩니다.' : '');
+    } finally {
+      if (g.controller === controller) { g.controller = null; g.busy = false; updateGeneratorControls(); }
+    }
   }
 
   /* ---------- 도구: 프레임워크 빌더 ---------- */
@@ -868,7 +1016,7 @@
 
   function listHash() {
     return 'cat=' + encodeURIComponent(state.catId) + '&group=' + encodeURIComponent(state.group) +
-      '&tech=' + encodeURIComponent(state.tech) + '&level=' + encodeURIComponent(state.level) + '&q=' + encodeURIComponent(state.query);
+      '&tech=' + encodeURIComponent(state.tech) + '&level=' + encodeURIComponent(state.level) + '&q=' + encodeURIComponent(state.query) + '&page=' + state.page;
   }
 
   function rememberList() {
@@ -899,7 +1047,7 @@
   /** 상세·도구에서 뒤로: 걸어 둔 조건이 있으면 목록으로, 없으면 홈으로 */
   function backToList() {
     openMega(null);
-    renderList(); show('list');
+    renderList(true); show('list');
     location.hash = listHash();
   }
 
@@ -932,6 +1080,7 @@
       state.ape[k] = e.target.value;
       e.target.closest('.field').classList.toggle('done', !!e.target.value);
       el['ape-preview'].innerHTML = markSlots(apeText());
+      generatorChanged();
       store(LS.tools, { ape: state.ape, fwb: state.fwb, q: state.q });
     });
     el['ape-strategies'].addEventListener('click', e => {
@@ -941,9 +1090,32 @@
       const i = state.ape.strategies.indexOf(id);
       if (i >= 0) state.ape.strategies.splice(i, 1); else state.ape.strategies.push(id);
       renderApe();
+      generatorChanged();
     });
-    el['ape-count'].addEventListener('change', e => { state.ape.count = Number(e.target.value); renderApe(); });
-    el['ape-run'].addEventListener('change', e => { state.ape.runToo = e.target.checked; renderApe(); });
+    el['ape-count'].addEventListener('change', e => { state.ape.count = Number(e.target.value); renderApe(); generatorChanged(); });
+    el['gen-provider'].addEventListener('change', e => {
+      state.generator.provider = e.target.value;
+      state.generator.model = ''; state.generator.key = '';
+      renderGeneratorConnection(); generatorChanged();
+    });
+    el['gen-model'].addEventListener('input', e => { state.generator.model = e.target.value; generatorChanged(); });
+    el['gen-key'].addEventListener('input', e => { state.generator.key = e.target.value; });
+    el['gen-result'].addEventListener('input', e => { state.generator.result = e.target.value; updateGeneratorControls(); });
+    el['view-ape'].addEventListener('click', async e => {
+      const button = e.target.closest('[data-act]');
+      if (!button) return;
+      const action = button.dataset.act;
+      if (action === 'gen-generate') generatePrompt();
+      else if (action === 'gen-cancel') cancelGeneration();
+      else if (action === 'gen-forget') {
+        if (state.generator.busy) cancelGeneration();
+        state.generator.key = ''; el['gen-key'].value = '';
+        el['gen-status'].textContent = '입력한 API 키를 지웠습니다.';
+      } else if (action === 'gen-copy') copy(state.generator.result, '프롬프트 복사');
+      else if (action === 'gen-open') {
+        if (await copy(state.generator.result, '프롬프트 복사')) window.open('https://claude.ai/new', '_blank', 'noopener');
+      }
+    });
 
     // 프레임워크
     el['fw-picker'].addEventListener('click', e => {
@@ -1011,6 +1183,42 @@
   /* ---------- 이벤트 ---------- */
 
   function bindGlobal() {
+    el['home-generator-form'].addEventListener('submit', e => {
+      e.preventDefault();
+      const task = el['home-generator-task'].value.trim();
+      if (task) { state.ape.task = task; generatorChanged(); }
+      openTool('ape');
+    });
+    document.getElementById('home-generator').addEventListener('click', e => {
+      const button = e.target.closest('[data-generator-example]');
+      if (!button) return;
+      el['home-generator-task'].value = button.dataset.generatorExample;
+      el['home-generator-task'].focus();
+    });
+    const turnPage = delta => {
+      state.page += delta; renderList(true); rememberList();
+      window.scrollTo({ top: 0, behavior: 'auto' });
+      el['cat-title'].setAttribute('tabindex', '-1'); el['cat-title'].focus({ preventScroll: true });
+    };
+    el['page-prev'].addEventListener('click', () => turnPage(-1));
+    el['page-next'].addEventListener('click', () => turnPage(1));
+    el['finder-form'].addEventListener('submit', e => { e.preventDefault(); recommendPrompts(); });
+    el['view-home'].addEventListener('click', e => {
+      if (e.target.closest('[data-find-start]')) {
+        const finder = document.getElementById('prompt-finder');
+        finder.scrollIntoView({ behavior: window.PMOTION && window.PMOTION.reduced() ? 'auto' : 'smooth', block: 'start' });
+        el['finder-group'].focus({ preventScroll: true });
+      }
+      if (e.target.closest('[data-finder-reset]')) {
+        el['finder-group'].value = 'all'; el['finder-goal'].value = 'all'; el['finder-query'].value = '';
+        el['finder-output'].hidden = true; el['finder-results'].innerHTML = ''; el['finder-status'].textContent = '';
+        el['finder-group'].focus({ preventScroll: true });
+      }
+    });
+    document.getElementById('back-top').addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: window.PMOTION && window.PMOTION.reduced() ? 'auto' : 'smooth' });
+      el.home.focus({ preventScroll: true });
+    });
     el.search.addEventListener('input', e => {
       const v = e.target.value;
       if (v.charAt(0) === '/' && v.length > 1) {
@@ -1056,6 +1264,7 @@
 
     // 메가 메뉴 열고 닫기
     el.gnb.addEventListener('click', e => {
+      if (e.target.closest('[data-tool="ape"]')) { openTool('ape'); return; }
       const b = e.target.closest('button[data-mega]');
       if (!b) return;
       openMega(state.mega === b.dataset.mega ? null : b.dataset.mega);
@@ -1122,7 +1331,7 @@
       goCategory('fav');
     });
 
-    el['home-easy'].addEventListener('click', async e => {
+    ['home-easy', 'finder-results'].forEach(id => el[id].addEventListener('click', async e => {
       const b = e.target.closest('button');
       if (!b) return;
       if (b.dataset.fav) toggleFav(b.dataset.fav);
@@ -1132,7 +1341,7 @@
         const p = await ensureFull(b.dataset.quick);
         if (p) copy(PC.render(p, { style: 'markdown' }).text, p.title + ' 복사');
       }
-    });
+    }));
 
     el['view-list'].addEventListener('click', e => {
       if (!e.target.closest('[data-clear-filters]')) return;
@@ -1386,7 +1595,8 @@
       state.tech = techById(params.tech) ? params.tech : 'all';
       state.level = LEVELS.includes(params.level) ? params.level : 'all';
       state.query = params.q || ''; el.search.value = state.query;
-      renderCategories(); renderFilters(); renderList(); show('list');
+      state.page = Math.max(1, parseInt(params.page, 10) || 1);
+      renderCategories(); renderFilters(); renderList(true); show('list');
     }
   }
 

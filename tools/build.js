@@ -228,7 +228,7 @@ function build() {
   const index = prompts.map(p => ({
     id: p.id, c: p.categoryId, t: p.title, s: p.summary,
     l: p.level, g: p.tags, k: p.techniques, y: p.type,
-    n: (p.placeholders || []).length
+    n: (p.placeholders || []).length, h: p.scenarioId || p.id
   }));
 
   fs.writeFileSync(path.join(DATA, 'categories.json'),

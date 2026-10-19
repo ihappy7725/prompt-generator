@@ -145,6 +145,14 @@ a{color:inherit}
   border:1px solid var(--line-mid);background:#fff;color:var(--text);
 }
 .btn:hover{border-color:var(--text)}
+.btn:disabled{opacity:.5;cursor:not-allowed;filter:none;transform:none}
+.generator-advanced{border-top:1px solid var(--line);padding-top:14px}
+.generator-advanced summary{cursor:pointer;font-size:.84rem;color:var(--muted);margin-bottom:12px}
+.generator-advanced .chips{margin-bottom:12px}
+.generator-advanced .body{margin:10px 0;max-height:380px;overflow:auto}
+.generator-result{width:100%;min-height:380px;resize:vertical;font-family:var(--mono);font-size:.86rem;line-height:1.8;background:var(--bg-soft)}
+.generator-connection input,.generator-connection select{width:100%}
+#gen-status{min-height:2.5em;overflow-wrap:anywhere}
 .btn-copy{background:var(--text);border-color:var(--text);color:#fff}
 .btn-copy:hover{filter:brightness(1.15)}
 .btn-copy.done{background:var(--ok);border-color:var(--ok)}

@@ -5,238 +5,238 @@
       "name": "AI 활용",
       "command": "/ai",
       "description": "프롬프트 고치기, AI 답변 다듬기에 쓰는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "biz",
       "name": "창업·작은 사업",
       "command": "/biz",
       "description": "사업 아이디어 점검, 가격, 운영에 쓰는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "career",
       "name": "취업·이직",
       "command": "/career",
       "description": "이력서, 자기소개서, 면접 준비에 쓰는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "cs",
       "name": "고객 응대",
       "command": "/cs",
       "description": "문의 답변, 불만 응대, 안내문에 쓰는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "daily",
       "name": "일상",
       "command": "/daily",
       "description": "하루 계획, 할 일 정리, 집안일 정리에 쓰는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "data",
       "name": "데이터·엑셀",
       "command": "/data",
       "description": "표 정리, 수식, 간단한 분석에 쓰는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "decision",
       "name": "선택·문제 해결",
       "command": "/decide",
       "description": "고민 정리, 장단점 비교, 결정에 쓰는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "design",
       "name": "디자인·기획",
       "command": "/design",
       "description": "화면 구성, 디자인 설명, 기획 정리에 쓰는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "dev",
       "name": "개발",
       "command": "/dev",
       "description": "코드 설명, 오류 찾기, 리뷰에 쓰는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "email",
       "name": "메일·메신저",
       "command": "/mail",
       "description": "업무 메일과 메시지를 쓰고 다듬는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "event",
       "name": "행사·선물",
       "command": "/event",
       "description": "축하 메시지, 선물 고르기, 모임 준비에 쓰는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "fitness",
       "name": "운동",
       "command": "/fit",
       "description": "운동 계획, 자세 점검, 기록에 쓰는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "food",
       "name": "요리·식단",
       "command": "/food",
       "description": "냉장고 재료 요리, 식단, 장보기에 쓰는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "health",
       "name": "건강",
       "command": "/health",
       "description": "증상 정리, 병원 질문 준비에 쓰는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "home",
       "name": "집·이사",
       "command": "/home",
       "description": "집 구하기, 이사, 정리·인테리어에 쓰는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "language",
       "name": "외국어",
       "command": "/lang",
       "description": "번역, 회화 연습, 단어 암기에 쓰는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "legal",
       "name": "생활 법률",
       "command": "/legal",
       "description": "계약서 읽기, 권리 확인에 쓰는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "marketing",
       "name": "마케팅",
       "command": "/marketing",
       "description": "광고 문구, 상품 소개, 고객 분석에 쓰는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "meeting",
       "name": "회의",
       "command": "/meeting",
       "description": "회의 준비, 회의록, 안건 정리에 쓰는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "mind",
       "name": "마음·감정",
       "command": "/mind",
       "description": "감정 정리, 스트레스, 일기에 쓰는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "money",
       "name": "돈 관리",
       "command": "/money",
       "description": "가계부, 저축 계획, 지출 점검에 쓰는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "parenting",
       "name": "육아",
       "command": "/kids",
       "description": "아이 대화, 놀이, 생활 습관에 쓰는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "pet",
       "name": "반려동물",
       "command": "/pet",
       "description": "반려동물 돌봄, 행동 이해에 쓰는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "relation",
       "name": "인간관계",
       "command": "/relation",
       "description": "어려운 대화, 사과, 부탁, 거절에 쓰는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "research",
       "name": "정보 조사",
       "command": "/research",
       "description": "자료 비교, 핵심 정리, 질문 만들기에 쓰는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "shopping",
       "name": "쇼핑·구매",
       "command": "/shop",
       "description": "제품 비교, 후기 정리, 구매 결정에 쓰는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "sns",
       "name": "SNS 콘텐츠",
       "command": "/sns",
       "description": "인스타·블로그 글과 해시태그를 만드는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "story",
       "name": "창작·이야기",
       "command": "/story",
       "description": "소설, 시, 캐릭터, 설정을 만드는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "study",
       "name": "공부",
       "command": "/study",
       "description": "시험 준비, 개념 정리, 요약에 쓰는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "teach",
       "name": "가르치기",
       "command": "/teach",
       "description": "수업 자료, 학습지, 학생 피드백을 만드는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "travel",
       "name": "여행",
       "command": "/travel",
       "description": "일정 짜기, 짐 싸기, 예산에 쓰는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "video",
       "name": "영상·유튜브",
       "command": "/video",
       "description": "영상 기획, 대본, 제목을 만드는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "work",
       "name": "직장 업무",
       "command": "/work",
       "description": "보고서, 기획서, 업무 정리에 쓰는 프롬프트",
-      "count": 10
+      "count": 100
     },
     {
       "id": "writing",
       "name": "글쓰기",
       "command": "/write",
       "description": "문장 다듬기, 교정, 말투 바꾸기에 쓰는 프롬프트",
-      "count": 10
+      "count": 100
     }
   ],
   "taxonomy": {

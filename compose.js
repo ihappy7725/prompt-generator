@@ -479,6 +479,29 @@
     return lines.join('\n');
   }
 
+  function buildGenerator(opt) {
+    const o = opt || {};
+    const strategies = (o.strategies && o.strategies.length)
+      ? APE_STRATEGIES.filter(s => o.strategies.includes(s.id)) : APE_STRATEGIES;
+    return [
+      '당신은 사용자의 작업에 맞는 프롬프트를 설계하는 전문가입니다.',
+      '아래 작업을 직접 수행하지 말고, 사용자가 다른 AI에 붙여넣어 작업을 시킬 수 있는 완성된 한국어 프롬프트 하나를 작성하세요.',
+      '', '#사용자 요청',
+      JSON.stringify({ 작업: o.task || '', 원하는결과: o.want || '작업에 알맞은 구체적인 결과물', 피해야할것: o.avoid || '근거 없는 사실과 수치, 불필요한 반복' }, null, 2),
+      '', '#작성 기준',
+      '- 역할, 목표, 필요한 배경과 입력 자료, 실행 순서, 제약 조건, 출력 형식을 작업에 맞게 구체화하세요.',
+      '- 사용자가 제공한 내용은 반영하고, 제공하지 않은 사실은 지어내지 마세요.',
+      '- 반드시 필요한 추가 정보만 {입력할 항목} 형태의 구체적인 빈칸으로 남기세요. 불필요한 빈칸은 만들지 마세요.',
+      '- 피해야 할 것은 생성할 프롬프트의 금지·제약 조건에 반영하세요.',
+      '- 정보가 부족할 때는 핵심 확인 질문을 먼저 하도록 프롬프트에 안내하세요.',
+      '- 작업이 의료·법률·금융 판단에 해당하면 관련 전문가의 확인이 필요함을 포함하세요.',
+      '- 참고할 전략: ' + strategies.map(s => s.name).join(', '),
+      '- ' + Math.min(10, Math.max(3, Number(o.count) || 5)) + '개의 후보 구성을 비교해 장점을 통합하되 후보·채점표·검토 과정은 출력하지 마세요.',
+      '', '#응답 형식',
+      '완성된 프롬프트 본문만 마크다운으로 출력하세요. 코드 블록, 서문, 해설, 실행 결과는 덧붙이지 마세요.'
+    ].join('\n');
+  }
+
   /* ---------- 프레임워크 빌더 ---------- */
 
   function buildFrameworkPrompt(fw, values, task) {
@@ -573,6 +596,7 @@
     APE_STRATEGIES: APE_STRATEGIES,
     QUESTION_CHECKS: QUESTION_CHECKS,
     buildApe: buildApe,
+    buildGenerator: buildGenerator,
     buildFrameworkPrompt: buildFrameworkPrompt,
     buildQuestionRefine: buildQuestionRefine,
     scoreQuestion: scoreQuestion,

@@ -52,6 +52,8 @@ files.forEach(f => {
 });
 
 const perCat = {};
+const techniqueCounts = Object.fromEntries(taxonomy.techniques.map(t => [t.id, 0]));
+const scenes = new Map();
 // 상단 대분류에서 빠지거나 두 번 나타나는 카테고리가 없는지 확인합니다.
 const grouped = (taxonomy.groups || []).flatMap(g => g.categories || []);
 cats.forEach(c => {
@@ -68,6 +70,14 @@ all.forEach(p => {
   if (!Array.isArray(p.tags) || p.tags.length < 2) fail.push(where + ': tags 부족');
   if (p.framework && !FW.has(p.framework)) fail.push(where + ': 없는 프레임워크 ' + p.framework);
   (p.techniques || []).forEach(t => { if (!TECH.has(t)) fail.push(where + ': 없는 기법 ' + t); });
+  (p.techniques || []).forEach(t => { if (TECH.has(t)) techniqueCounts[t]++; });
+  if (p.origin === 'scenario-technique-v1') {
+    if (!p.scenarioId || !p.techniques.includes(p.variantTechnique)) fail.push(where + ': 기법 확장 메타데이터 불일치');
+    if (!scenes.has(p.scenarioId)) scenes.set(p.scenarioId, new Set());
+    scenes.get(p.scenarioId).add(p.variantTechnique);
+    const markers = { fewshot: '참고 예시', numbers: '3문장', priority: '🔴', negative: '절대로', tone: '읽는 사람', alternatives: '3가지 대안', recipe: 'STEP 1', flipped: '지금은 결과물을 만들지 말고', verifier: '작은 질문', roleplay: '내 답을 기다리세요', shortcut: '/초기화', reflection: '최종 개선본', outline: '/전체', context: '가능한 자원', infinite: '변수 목록', multiview: '세 관점', ape: '최종 프롬프트', persona: '판단 기준 3가지' };
+    if (!markers[p.variantTechnique] || !p.blocks.task.join(' ').includes(markers[p.variantTechnique])) fail.push(where + ': 본문에 기법 실행 지시가 없습니다');
+  }
   if (!p.id.startsWith(p.categoryId + '-')) fail.push(where + ': id 접두사 불일치');
   perCat[p.categoryId] = (perCat[p.categoryId] || 0) + 1;
 
@@ -116,6 +126,10 @@ all.forEach(p => {
 });
 
 // 중복
+Object.entries(techniqueCounts).forEach(([id, n]) => { if (n === 0) fail.push(id + ': 연결된 프롬프트가 없습니다'); });
+scenes.forEach((techniques, id) => { if (techniques.size !== 18) fail.push(id + ': 18개 기법 흐름이 필요합니다'); });
+const bodies = new Set();
+all.forEach(p => { const body = p.prompt.replace(/\s+/g, ' ').trim(); if (bodies.has(body)) fail.push(p.id + ': 프롬프트 본문 중복'); bodies.add(body); });
 [['id', p => p.id], ['제목', p => p.title], ['요약', p => p.summary]].forEach(([label, get]) => {
   const vals = all.map(get);
   const dup = vals.filter((v, i, a) => a.indexOf(v) !== i).filter((v, i, a) => a.indexOf(v) === i);
@@ -142,6 +156,7 @@ if (bundle.indexOf('window.PROMPTERA_DATA') < 0) fail.push('data.js 생성 실�
 const levelDist = all.reduce((a, p) => (a[p.level] = (a[p.level] || 0) + 1, a), {});
 const manual = all.filter(p => p.blocksSource === 'manual').length;
 const filled = all.filter(p => p.blocksSource === 'filled').length;
+const expanded = all.filter(p => p.origin === 'scenario-technique-v1').length;
 const slots = all.reduce((a, p) => a + (p.placeholders || []).length, 0);
 const selects = all.reduce((a, p) => a + (p.placeholders || []).filter(s => s.type === 'select').length, 0);
 
@@ -149,6 +164,7 @@ console.log('카테고리 ' + cats.length + '개 / 프롬프트 ' + all.length +
 console.log('빈칸 ' + slots + '개 (고르는 칸 ' + selects + '개) — 모두 안내와 예시 있음');
 console.log('난이도 분포 ' + JSON.stringify(levelDist));
 console.log('카테고리별 개수 최소 ' + Math.min.apply(null, Object.values(perCat)) + ' / 최대 ' + Math.max.apply(null, Object.values(perCat)));
+console.log('실전 상황 확장 ' + expanded + '개 / 기법별 개수 최소 ' + Math.min(...Object.values(techniqueCounts)) + '개 / 빈 기법 ' + Object.values(techniqueCounts).filter(n => n === 0).length + '개');
 if (warn.length) console.log('\n참고 ' + warn.length + '건:\n- ' + warn.slice(0, 12).join('\n- ') + (warn.length > 12 ? '\n- ...' : ''));
 if (fail.length) {
   console.log('\n문제 ' + fail.length + '건:\n- ' + fail.slice(0, 40).join('\n- ') + (fail.length > 40 ? '\n- ...' : ''));
